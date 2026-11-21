@@ -5,5 +5,6 @@ source "$SCRIPT_DIR/lib.sh"
 load_config
 require_docker
 verify_upstream
+verify_deployment_identity
 echo "Trailytics dashboard: $(dashboard_url)"
 run_upstream --verify

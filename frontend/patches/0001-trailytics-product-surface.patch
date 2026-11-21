@@ -14,6 +14,36 @@ index d77ef8b..eaa9e5b 100644
    </head>
    <body class="size-full">
      <div class="size-full" id="root"></div>
+diff --git a/src/plugins/comet/UserMenuAppLinks.tsx b/src/plugins/comet/UserMenuAppLinks.tsx
+index fde3dd4..38af238 100644
+--- a/src/plugins/comet/UserMenuAppLinks.tsx
++++ b/src/plugins/comet/UserMenuAppLinks.tsx
+@@ -87,9 +87,9 @@ const UserMenuAppLinks = ({ isLLMOnlyOrganization }: UserMenuAppLinksProps) => {
+       <DropdownMenuSeparator />
+       {showOpikReturn && (
+         <AppLinkItem
+-          badge="O"
++          badge="T"
+           badgeClassName="bg-chart-green"
+-          label="Opik"
++          label="Trailytics"
+           to="/$workspaceName/home"
+           params={{ workspaceName: opikWorkspaceName }}
+         />
+diff --git a/src/plugins/comet/WorkspacePreloader.tsx b/src/plugins/comet/WorkspacePreloader.tsx
+index 0d05611..3e90a00 100644
+--- a/src/plugins/comet/WorkspacePreloader.tsx
++++ b/src/plugins/comet/WorkspacePreloader.tsx
+@@ -262,7 +262,8 @@ const WorkspacePreloader: React.FunctionComponent<WorkspacePreloaderProps> = ({
+     return (
+       <div className="flex h-screen w-screen flex-col items-center justify-center gap-4">
+         <div className="comet-body py-4">
+-          Opik traces limit has reached, to continue please purchase additional
++          Trailytics traces limit has reached, to continue please purchase
++          additional
+           traces via AWS
+         </div>
+ 
 diff --git a/src/shared/Logo/Logo.tsx b/src/shared/Logo/Logo.tsx
 index b73b72d..7420230 100644
 --- a/src/shared/Logo/Logo.tsx
@@ -53,6 +83,137 @@ index b73b72d..7420230 100644
    );
  };
  
+diff --git a/src/shared/OAuthConsentPage/OAuthConsentPage.tsx b/src/shared/OAuthConsentPage/OAuthConsentPage.tsx
+index a0b1649..0636459 100644
+--- a/src/shared/OAuthConsentPage/OAuthConsentPage.tsx
++++ b/src/shared/OAuthConsentPage/OAuthConsentPage.tsx
+@@ -140,7 +140,7 @@ const OAuthConsentPage: React.FC = () => {
+           ) : null}
+           <CardTitle>{data.client_name}</CardTitle>
+           <CardDescription>
+-            wants access to your Opik workspace. Approving grants the AI host
++            wants access to your Trailytics workspace. Approving grants the AI host
+             full access to data in the selected workspace, with your existing
+             permissions.
+           </CardDescription>
+@@ -177,7 +177,7 @@ const WorkspacePicker: React.FC<{
+   if (workspaces.length === 0) {
+     return (
+       <p className="text-sm text-muted-foreground">
+-        No eligible workspaces. Create one in Opik before approving this
++        No eligible workspaces. Create one in Trailytics before approving this
+         request.
+       </p>
+     );
+diff --git a/src/shared/OnboardingIntegrationsPage/OnboardingIntegrationsPage.tsx b/src/shared/OnboardingIntegrationsPage/OnboardingIntegrationsPage.tsx
+index 726f06a..9bcc0bc 100644
+--- a/src/shared/OnboardingIntegrationsPage/OnboardingIntegrationsPage.tsx
++++ b/src/shared/OnboardingIntegrationsPage/OnboardingIntegrationsPage.tsx
+@@ -31,14 +31,14 @@ const OnboardingIntegrationsPage: React.FC<OnboardingIntegrationsPageProps> = ({
+     <div className="mx-auto w-full max-w-[1040px] pb-10">
+       <div className="mb-3 mt-6 flex items-center justify-between md:mt-10">
+         <h1 className="md:comet-title-xl comet-title-l">
+-          Get started with Opik
++          Get started with Trailytics
+         </h1>
+         {banner}
+       </div>
+       <p className="comet-body-s mb-10 text-muted-slate">
+-        Opik helps you improve your LLM features by tracking what happens behind
+-        the scenes. Integrate Opik to unlock evaluations, experiments, and
+-        debugging.
++        Trailytics helps you improve your LLM features by tracking what happens
++        behind the scenes. Integrate Trailytics to unlock evaluations,
++        experiments, and debugging.
+       </p>
+ 
+       <IntegrationExplorer source={source}>
+diff --git a/src/shared/PairingStatusScreen/PairingStatusScreen.tsx b/src/shared/PairingStatusScreen/PairingStatusScreen.tsx
+index 32154d3..a7e1c9a 100644
+--- a/src/shared/PairingStatusScreen/PairingStatusScreen.tsx
++++ b/src/shared/PairingStatusScreen/PairingStatusScreen.tsx
+@@ -1,8 +1,4 @@
+ import React from "react";
+-import { useTheme } from "@/contexts/theme-provider";
+-import { THEME_MODE } from "@/constants/theme";
+-import opikLogoUrl from "/images/opik-logo.png";
+-import opikLogoInvertedUrl from "/images/opik-logo-inverted.png";
+ 
+ export type PairingStatus = "loading" | "success" | "error";
+ export type RunnerVariant = "connect" | "endpoint";
+@@ -47,8 +43,8 @@ function getCopy(props: PairingStatusScreenProps): {
+   if (props.status === "success") {
+     const headline =
+       props.runnerVariant === "endpoint"
+-        ? "Your agent is connected to Opik"
+-        : "Opik is connected to your codebase";
++        ? "Your agent is connected to Trailytics"
++        : "Trailytics is connected to your codebase";
+     return {
+       headline,
+       subtitle: "Pairing successful — you can safely close this tab.",
+@@ -69,7 +65,7 @@ function getCopy(props: PairingStatusScreenProps): {
+       };
+     case "unreachable":
+       return {
+-        headline: "Couldn't reach Opik",
++        headline: "Couldn't reach Trailytics",
+         subtitle: "Check your connection and try again.",
+       };
+     case "insecure_context":
+@@ -81,7 +77,7 @@ function getCopy(props: PairingStatusScreenProps): {
+       return {
+         headline: "Workspace upgrade required",
+         subtitle:
+-          "Opik Connect requires Opik 2.0. Please upgrade your workspace to continue.",
++          "Trailytics Connect requires Opik 2.0. Please upgrade your workspace to continue.",
+       };
+     default:
+       return {
+@@ -110,7 +106,6 @@ export const PairingStatusScreen: React.FC<PairingStatusScreenProps> = (
+   props,
+ ) => {
+   const { headline, subtitle } = getCopy(props);
+-  const { themeMode } = useTheme();
+ 
+   const showWorkspaceContext =
+     props.status === "error" &&
+@@ -126,18 +121,20 @@ export const PairingStatusScreen: React.FC<PairingStatusScreenProps> = (
+       aria-label="Pairing status"
+       className="flex min-h-screen flex-col items-center justify-center p-6"
+     >
+-      <img
+-        src={themeMode === THEME_MODE.DARK ? opikLogoInvertedUrl : opikLogoUrl}
+-        alt="Opik"
+-        className="mb-10 h-10"
+-      />
++      <div
++        role="img"
++        aria-label="Trailytics"
++        className="mb-10 text-2xl font-semibold tracking-tight"
++      >
++        Trailytics
++      </div>
+       <div className="flex flex-col items-center gap-2">
+         <h1 className="comet-title-s text-center">{headline}</h1>
+         <p className="comet-body text-center text-muted-slate">{subtitle}</p>
+         {showWorkspaceContext && (
+           <div className="mt-6 flex flex-col items-center gap-2">
+             <p className="comet-body-s text-muted-slate">
+-              The CLI tried to pair using these Opik settings:
++              The CLI tried to pair using these Trailytics settings:
+             </p>
+             <dl
+               aria-label="Pairing context"
+@@ -145,7 +142,7 @@ export const PairingStatusScreen: React.FC<PairingStatusScreenProps> = (
+             >
+               {props.expectedBaseUrl ? (
+                 <>
+-                  <dt className="text-muted-slate">Opik URL</dt>
++                  <dt className="text-muted-slate">Trailytics URL</dt>
+                   <dd className="break-all font-medium">
+                     {safeBaseUrlHref ? (
+                       <a
 diff --git a/src/v2/layout/SettingsMenu/SettingsMenu.tsx b/src/v2/layout/SettingsMenu/SettingsMenu.tsx
 index 0bdc09d..55fb5ee 100644
 --- a/src/v2/layout/SettingsMenu/SettingsMenu.tsx
@@ -191,6 +352,61 @@ index 1b67fb3..d8b2af9 100644
      {
        id: "evaluation",
        label: "Evaluation",
+diff --git a/src/v2/pages/AgentRunnerPage/AgentRunnerEmptyState.tsx b/src/v2/pages/AgentRunnerPage/AgentRunnerEmptyState.tsx
+index 0b5c3c9..627521d 100644
+--- a/src/v2/pages/AgentRunnerPage/AgentRunnerEmptyState.tsx
++++ b/src/v2/pages/AgentRunnerPage/AgentRunnerEmptyState.tsx
+@@ -44,7 +44,7 @@ const AgentRunnerEmptyState: React.FC = () => {
+           <h2 className="comet-title-m">Connect your agent</h2>
+         </div>
+         <p className="comet-body-s mb-8 text-muted-slate">
+-          Link your agent to Opik to start using the Agent playground and
++          Link your agent to Trailytics to start using the Agent playground and
+           improve performance.
+         </p>
+ 
+@@ -57,7 +57,7 @@ const AgentRunnerEmptyState: React.FC = () => {
+               <p className="comet-body-xs text-muted-slate">
+                 Add{" "}
+                 <code className="font-code">@opik.track(entrypoint=True)</code>{" "}
+-                to your agent&apos;s main function so Opik can detect and
++                to your agent&apos;s main function so Trailytics can detect and
+                 register it. You can also run{" "}
+                 <code className="font-code">/instrument</code> in the Ollie
+                 sidebar to auto-instrument your agent.
+@@ -93,7 +93,7 @@ const AgentRunnerEmptyState: React.FC = () => {
+                 Run the connection command
+               </h4>
+               <p className="comet-body-xs text-muted-slate">
+-                Install and run the Opik connector in your terminal (works with
++                Install and run the Trailytics connector in your terminal (works with
+                 Claude Code, Codex, Cursor, Windsurf, and more):
+               </p>
+               <CodeSnippet title="Terminal" code={command} />
+diff --git a/src/v2/pages/GetStartedPage/AgentOnboarding/ConnectAgentStep.tsx b/src/v2/pages/GetStartedPage/AgentOnboarding/ConnectAgentStep.tsx
+index b5d9ffb..f16df9e 100644
+--- a/src/v2/pages/GetStartedPage/AgentOnboarding/ConnectAgentStep.tsx
++++ b/src/v2/pages/GetStartedPage/AgentOnboarding/ConnectAgentStep.tsx
+@@ -243,8 +243,8 @@ const ConnectAgentStep: React.FC = () => {
+ 
+   return (
+     <AgentOnboardingCard
+-      title={`Set up Opik for ${agentName}`}
+-      description="Connect your repo so Opik can help set up tracing, or instrument your code manually."
++      title={`Set up Trailytics for ${agentName}`}
++      description="Connect your repo so Trailytics can help set up tracing, or instrument your code manually."
+       headerContent={
+         <div className="flex flex-col gap-3">
+           <Separator />
+@@ -259,7 +259,7 @@ const ConnectAgentStep: React.FC = () => {
+             id="onboarding-step2-view-traces"
+             data-fs-element="onboarding-step2-view-traces"
+           >
+-            Explore Opik
++            Explore Trailytics
+             <ArrowRight className="size-3.5" />
+           </Button>
+         ) : (
 diff --git a/src/v2/pages/GetStartedPage/AgentOnboarding/SelectIntentStep.tsx b/src/v2/pages/GetStartedPage/AgentOnboarding/SelectIntentStep.tsx
 index 4570efd..74cd8ec 100644
 --- a/src/v2/pages/GetStartedPage/AgentOnboarding/SelectIntentStep.tsx
@@ -204,3 +420,40 @@ index 4570efd..74cd8ec 100644
            </p>
            <h2 className="comet-title-m">Where are you right now?</h2>
          </div>
+diff --git a/src/v2/pages/GetStartedPage/MobileOnboarding/MobileOnboarding.tsx b/src/v2/pages/GetStartedPage/MobileOnboarding/MobileOnboarding.tsx
+index 55a5f07..1d652f5 100644
+--- a/src/v2/pages/GetStartedPage/MobileOnboarding/MobileOnboarding.tsx
++++ b/src/v2/pages/GetStartedPage/MobileOnboarding/MobileOnboarding.tsx
+@@ -14,8 +14,8 @@ import { illustrationUrlsByTheme } from "./illustrations";
+ import "./animations.css";
+ 
+ const STEP_CONFIG = [
+-  { nextLabel: "See Opik in action" },
+-  { nextLabel: "Let Opik recommend fixes" },
++  { nextLabel: "See Trailytics in action" },
++  { nextLabel: "Let Trailytics recommend fixes" },
+   { nextLabel: "Start sending traces" },
+   { nextLabel: "Explore the platform", nextVariant: "outline" as const },
+ ];
+diff --git a/src/v2/pages-shared/WelcomeWizard/WelcomeWizardDialog.tsx b/src/v2/pages-shared/WelcomeWizard/WelcomeWizardDialog.tsx
+index bcdda72..13936da 100644
+--- a/src/v2/pages-shared/WelcomeWizard/WelcomeWizardDialog.tsx
++++ b/src/v2/pages-shared/WelcomeWizard/WelcomeWizardDialog.tsx
+@@ -148,7 +148,7 @@ const WelcomeWizardDialog: React.FunctionComponent<
+         onPointerDownOutside={(e) => e.preventDefault()}
+       >
+         <DialogHeader>
+-          <DialogTitle>Welcome to Opik 🚀</DialogTitle>
++          <DialogTitle>Welcome to Trailytics 🚀</DialogTitle>
+           <DialogDescription>
+             We&apos;re moving fast! Tell us who you are so we can share the most
+             relevant guides and updates with you.
+@@ -308,7 +308,7 @@ const WelcomeWizardDialog: React.FunctionComponent<
+                 onClick={handleDismiss}
+                 className="w-full text-sm text-muted-foreground"
+               >
+-                Skip and go to Opik
++                Skip and go to Trailytics
+               </Button>
+             </div>
+           </form>

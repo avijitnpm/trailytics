@@ -5,4 +5,5 @@ source "$SCRIPT_DIR/lib.sh"
 load_config
 require_docker
 verify_upstream
+verify_deployment_identity
 run_upstream --stop

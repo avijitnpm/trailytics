@@ -1,67 +1,44 @@
 # Trailytics Phase 1 — Current Status
 
-Updated: 2026-11-20
+Updated: 2026-11-21
 
-## Completed
+## Implemented and verified
 
-- Created the dedicated local wrapper repository at `/home/ron/fcode/trailytics`.
-- Resolved the official Opik `2.2.138` tag to immutable commit
-  `28192d8ffe85299f5c44032f705a9e518e6d1189` and checked out the upstream
-  source at that exact commit.
-- Kept the checked-out upstream source clean; no upstream tracked files have
-  been edited.
-- Added Trailytics-owned configuration, README, implementation notes, wrapper
-  script skeletons, frontend patch manifest, product-surface patch, and an SVG
-  favicon asset.
-- Added a frontend patch that changes the browser title, sidebar wordmark,
-  favicon reference, onboarding greeting, Development navigation group, GitHub
-  stars control, and Support menu. The patch is designed to run only against a
-  temporary build copy of the upstream frontend.
-- Added wrapper configuration that disables `CREATE_DEMO_DATA` and
-  `TOGGLE_DEMO_DATA_ENABLED`, matching the pinned upstream deployment's demo
-  generator and backend service-toggle names.
-- Added wrapper startup configuration with a 600-second budget, matching the
-  upstream backend health-check allowance and avoiding the launcher's default
-  90-second early timeout.
+- Outer repository committed; `upstream/opik` is a real submodule pinned at
+  `28192d8ffe85299f5c44032f705a9e518e6d1189`.
+- `install.sh` fetches the submodule with full history (no `--depth 1`), so the
+  pinned release tag is reachable on a fresh machine.
+- Frontend patch extended to 15 files: title, favicon, sidebar wordmark,
+  Development group, GitHub stars, Support menu, onboarding integrations,
+  welcome wizard, pairing screen, OAuth consent, agent setup, agent-runner
+  empty state, user menu, mobile onboarding, trace-limit message.
+- Production frontend image built and running; `curl` reports
+  `<title>Trailytics</title>` and the served bundle contains the new copy.
+- Build fingerprint (`frontend/patches` + assets + pinned version/commit) is
+  stored as an image label; `start.sh` rebuilds only when it changes.
+- Compose identity asserted as `opik-opik`; start/stop/status refuse a project
+  containing containers from another checkout.
+- `stop.sh` → `start.sh` cycle preserved the exact same `opik-opik_*` volumes
+  (same creation timestamps); MySQL `workspaces` count unchanged.
+- Demo data remains off (`CREATE_DEMO_DATA=false`); the generator exits without
+  creating data.
+- Install telemetry disabled: `send_install_report` with
+  `OPIK_USAGE_REPORT_ENABLED=false` returns before any HTTP call (verified with
+  a fake `curl`; 0 invocations).
+- Startup diagnostics print project status and the log tail of unhealthy or
+  failed containers (verified against a stopped frontend).
 
-## Present repository layout
+## Verification limitations
 
-```text
-trailytics/
-├── config/trailytics.env
-├── docs/implementation.md
-├── frontend/assets/trailytics-favicon.svg
-├── frontend/patches/
-├── reports/current-status.md
-├── trailytics/{install,start,stop,status,build-frontend,lib}.sh
-└── upstream/opik/                 # checked out at Opik 2.2.138
-```
-
-## Not yet verified
-
-The previous validation command was interrupted before completion. The
-following work remains before Phase 1 can be called complete:
-
-- Validate shell syntax and dry-run the frontend patch against the pinned
-  source.
-- Register/stage the upstream checkout as the Git submodule entry in the new
-  wrapper repository, then commit the wrapper metadata.
-- Run `build-frontend.sh`, including the production Docker frontend build.
-- Exercise `install.sh`, repeated `start.sh`, `status.sh`, and non-destructive
-  `stop.sh` against Docker.
-- Verify actual dashboard branding and navigation in a browser.
-- Test startup timeout and failure diagnostics, plus persistence after restart.
-
-## Important constraints retained
-
-- The supplied Opik workspace was not modified.
-- No database, Docker volume, or user data was removed.
-- No Opik API, SDK, backend service, migration, route, or internal identifier
-  has been renamed.
-- The older `/home/ron/fcode/TrailAi` directory was inspected but not reused:
-  it is an unrelated Phoenix audit, not a Trailytics/Opik repository.
-
-## Current risk
-
-This is an in-progress implementation, not a verified deployable release yet.
-The patch and wrapper files exist, but build/runtime validation remains pending.
+- The fresh-clone test cloned the outer repository locally and resolved the
+  submodule URL against the local Opik object store rather than downloading
+  from GitHub. `git ls-remote` confirms tag `2.2.138` is exactly the pinned
+  commit, so a full GitHub clone can resolve it.
+- The retry loop's failure branch was not forced end-to-end: a 1-second budget
+  still observed the stack become healthy. Diagnostics were tested directly on
+  a stopped container instead.
+- The project-level page screenshot timed out in headless Chromium; the
+  workspace screenshot verifies the wordmark, title, welcome wizard, and
+  "Skip and go to Trailytics".
+- Orphaned `opik-opik-2-2-138-*` and `opik-opik-2-2-143-*` stacks and volumes
+  were left untouched by design; see README for identification commands.
