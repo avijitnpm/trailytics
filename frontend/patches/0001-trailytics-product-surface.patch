@@ -1,0 +1,206 @@
+diff --git a/index.html b/index.html
+index d77ef8b..eaa9e5b 100644
+--- a/index.html
++++ b/index.html
+@@ -2,9 +2,9 @@
+ <html lang="en" class="size-full">
+   <head>
+     <meta charset="UTF-8" />
+-    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
++    <link rel="icon" type="image/svg+xml" href="/trailytics-favicon.svg" />
+     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+-    <title>Comet Opik</title>
++    <title>Trailytics</title>
+   </head>
+   <body class="size-full">
+     <div class="size-full" id="root"></div>
+diff --git a/src/shared/Logo/Logo.tsx b/src/shared/Logo/Logo.tsx
+index b73b72d..7420230 100644
+--- a/src/shared/Logo/Logo.tsx
++++ b/src/shared/Logo/Logo.tsx
+@@ -1,26 +1,22 @@
+ import React from "react";
+ import { cn } from "@/lib/utils";
+-import { useTheme } from "@/contexts/theme-provider";
+-import { THEME_MODE } from "@/constants/theme";
+-import imageLogoUrl from "/images/opik-logo.png";
+-import imageLogoInvertedUrl from "/images/opik-logo-inverted.png";
+ 
+ type LogoProps = {
+   expanded: boolean;
+ };
+ 
+ const Logo: React.FunctionComponent<LogoProps> = ({ expanded }) => {
+-  const { themeMode } = useTheme();
+-
+   return (
+-    <img
++    <div
++      aria-label="Trailytics"
++      role="img"
+       className={cn(
+-        "object-cover object-left",
+-        expanded ? "h-[18px]" : "h-[18px] w-[18px]",
++        "flex h-[22px] items-center font-semibold tracking-tight text-foreground",
++        !expanded && "w-[22px] justify-center rounded-md bg-primary text-primary-foreground",
+       )}
+-      src={themeMode === THEME_MODE.DARK ? imageLogoInvertedUrl : imageLogoUrl}
+-      alt="opik logo"
+-    />
++    >
++      <span className="text-sm">{expanded ? "Trailytics" : "T"}</span>
++    </div>
+   );
+ };
+ 
+diff --git a/src/v2/layout/SettingsMenu/SettingsMenu.tsx b/src/v2/layout/SettingsMenu/SettingsMenu.tsx
+index 0bdc09d..55fb5ee 100644
+--- a/src/v2/layout/SettingsMenu/SettingsMenu.tsx
++++ b/src/v2/layout/SettingsMenu/SettingsMenu.tsx
+@@ -13,7 +13,6 @@ import {
+   DropdownMenuTrigger,
+ } from "@/ui/dropdown-menu";
+ import { useThemeOptions } from "@/hooks/useThemeOptions";
+-import SupportHubSubMenu from "@/shared/SupportHub/SupportHubSubMenu";
+ 
+ const SettingsMenu = () => {
+   const { theme, themeOptions, CurrentIcon, handleThemeSelect } =
+@@ -29,7 +28,6 @@ const SettingsMenu = () => {
+       </DropdownMenuTrigger>
+       <DropdownMenuContent align="end" className="w-48">
+         <DropdownMenuGroup>
+-          <SupportHubSubMenu />
+           <DropdownMenuSub>
+             <DropdownMenuSubTrigger className="flex cursor-pointer items-center">
+               <CurrentIcon className="mr-2 size-4" />
+diff --git a/src/v2/layout/SideBar/WorkspaceSidebarContent.tsx b/src/v2/layout/SideBar/WorkspaceSidebarContent.tsx
+index 066da05..4a5d144 100644
+--- a/src/v2/layout/SideBar/WorkspaceSidebarContent.tsx
++++ b/src/v2/layout/SideBar/WorkspaceSidebarContent.tsx
+@@ -4,7 +4,6 @@ import { Separator } from "@/ui/separator";
+ import { calculateWorkspaceName, cn } from "@/lib/utils";
+ import usePluginsStore from "@/store/PluginsStore";
+ import SidebarMenuItem from "@/v2/layout/SideBar/MenuItem/SidebarMenuItem";
+-import GitHubStarListItem from "@/v2/layout/SideBar/GitHubStarListItem/GitHubStarListItem";
+ import BackToProjectButton from "@/v2/layout/SideBar/BackToProjectButton";
+ import { getWorkspaceSidebarMenuItems } from "@/v2/layout/SideBar/helpers/getMenuItems";
+ import { usePermissions } from "@/contexts/PermissionsContext";
+@@ -68,10 +67,6 @@ const WorkspaceSidebarContent: React.FC<WorkspaceSidebarContentProps> = ({
+ 
+       <div className="shrink-0 pt-2">
+         <BackToProjectButton expanded={expanded} />
+-        <Separator className={cn("my-2", !expanded && "mx-1 w-auto")} />
+-        <ul className={cn("flex flex-col", !expanded && "gap-1")}>
+-          <GitHubStarListItem expanded={expanded} />
+-        </ul>
+       </div>
+     </>
+   );
+diff --git a/src/v2/layout/SideBar/helpers/getMenuItems.ts b/src/v2/layout/SideBar/helpers/getMenuItems.ts
+index 1b67fb3..d8b2af9 100644
+--- a/src/v2/layout/SideBar/helpers/getMenuItems.ts
++++ b/src/v2/layout/SideBar/helpers/getMenuItems.ts
+@@ -1,10 +1,8 @@
+ import {
+   Bell,
+-  Blocks,
+   Bot,
+   ChartLine,
+   Database,
+-  FileTerminal,
+   FlaskConical,
+   House,
+   LayoutDashboard,
+@@ -12,17 +10,14 @@ import {
+   Radar,
+   Rows3,
+   Settings2,
+-  Sparkles,
+   UserPen,
+   Brain,
+-  GitBranch,
+ } from "lucide-react";
+ import OllieOwl from "@/icons/ollie-owl.svg?react";
+ import {
+   MENU_ITEM_TYPE,
+   MenuItemGroup,
+ } from "@/v2/layout/SideBar/MenuItem/SidebarMenuItem";
+-import PlaygroundNavBadge from "@/v2/layout/SideBar/MenuItem/PlaygroundNavBadge";
+ import DiagnosticsNavBadge from "@/v2/layout/SideBar/MenuItem/DiagnosticsNavBadge";
+ const getMenuItems = ({
+   projectId,
+@@ -129,61 +124,6 @@ const getMenuItems = ({
+           : []),
+       ],
+     },
+-    {
+-      id: "development",
+-      label: "Development",
+-      items: [
+-        ...(canViewPrompts
+-          ? [
+-              {
+-                id: "prompts",
+-                path: projectPath("/prompts"),
+-                type: MENU_ITEM_TYPE.router as const,
+-                icon: FileTerminal,
+-                label: "Prompt library",
+-                disabled: !projectPrefix,
+-              },
+-            ]
+-          : []),
+-        ...(canViewAgentPlayground
+-          ? [
+-              {
+-                id: "agent_runner",
+-                path: projectPath("/agent-playground"),
+-                type: MENU_ITEM_TYPE.router as const,
+-                icon: GitBranch,
+-                label: "Agent playground",
+-                disabled: !projectPrefix,
+-              },
+-            ]
+-          : []),
+-        ...(canUsePlayground
+-          ? [
+-              {
+-                id: "playground",
+-                path: projectPath("/playground"),
+-                type: MENU_ITEM_TYPE.router as const,
+-                icon: Blocks,
+-                label: "Prompt playground",
+-                disabled: !projectPrefix,
+-                badge: PlaygroundNavBadge,
+-              },
+-            ]
+-          : []),
+-        ...(canViewOptimizationRuns
+-          ? [
+-              {
+-                id: "optimizations",
+-                path: projectPath("/optimizations"),
+-                type: MENU_ITEM_TYPE.router as const,
+-                icon: Sparkles,
+-                label: "Optimization runs",
+-                disabled: !projectPrefix,
+-              },
+-            ]
+-          : []),
+-      ],
+-    },
+     {
+       id: "evaluation",
+       label: "Evaluation",
+diff --git a/src/v2/pages/GetStartedPage/AgentOnboarding/SelectIntentStep.tsx b/src/v2/pages/GetStartedPage/AgentOnboarding/SelectIntentStep.tsx
+index 4570efd..74cd8ec 100644
+--- a/src/v2/pages/GetStartedPage/AgentOnboarding/SelectIntentStep.tsx
++++ b/src/v2/pages/GetStartedPage/AgentOnboarding/SelectIntentStep.tsx
+@@ -53,7 +53,7 @@ const SelectIntentStep: React.FC = () => {
+       <div className="w-full max-w-[480px]">
+         <div className="flex flex-col gap-1.5">
+           <p className="comet-body-s text-muted-slate">
+-            Welcome to Opik - let&apos;s get you set up
++            Welcome to Trailytics - let&apos;s get you set up
+           </p>
+           <h2 className="comet-title-m">Where are you right now?</h2>
+         </div>

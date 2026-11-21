@@ -1,0 +1,3 @@
+[submodule "upstream/opik"]
+	path = upstream/opik
+	url = https://github.com/comet-ml/opik.git

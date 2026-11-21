@@ -1,0 +1,4 @@
+0001-trailytics-product-surface.patch
+
+The patch changes visible product identity and navigation only. It is applied
+to .trailytics-build/frontend, never to upstream/opik.
