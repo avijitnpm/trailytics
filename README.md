@@ -138,6 +138,24 @@ flush()
 * `TRAILYTICS_WORKSPACE`: Defaults to `default` (maps to `OPIK_WORKSPACE`).
 * External Comet analytics (`OPIK_ANALYTICS_ENABLE`) and external Sentry error reporting (`OPIK_SENTRY_ENABLE`) are disabled by default.
 
+## Trailytics CLI (Phase 3)
+
+Trailytics includes a command-line interface:
+
+```bash
+trailytics --help
+trailytics --version
+trailytics version
+```
+
+Example `trailytics version` output:
+
+```text
+Trailytics  0.3.0
+Opik Engine 2.2.138
+Commit      28192d8ffe85299f5c44032f705a9e518e6d1189
+```
+
 ## Upstream and reproducibility
 
 This distribution pins Opik `2.2.138` at

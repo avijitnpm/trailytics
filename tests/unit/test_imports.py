@@ -10,6 +10,8 @@ from trailytics import (
     flush_tracker,
     get_config,
     track,
+    RepositoryNotFoundError,
+    ScriptExecutionError,
     TrailyticsConfigurationError,
     TrailyticsError,
     __version__,
@@ -17,8 +19,8 @@ from trailytics import (
 
 
 def test_package_version():
-    assert __version__ == "0.2.0"
-    assert trailytics.__version__ == "0.2.0"
+    assert __version__ == "0.3.0"
+    assert trailytics.__version__ == "0.3.0"
 
 
 def test_public_symbols_exported():
@@ -34,6 +36,8 @@ def test_public_symbols_exported():
         "get_config",
         "TrailyticsError",
         "TrailyticsConfigurationError",
+        "RepositoryNotFoundError",
+        "ScriptExecutionError",
     ]
     for symbol in expected_symbols:
         assert hasattr(trailytics, symbol), f"Symbol '{symbol}' not found in trailytics"

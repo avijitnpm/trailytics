@@ -4,15 +4,15 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "trailytics"
-version = "0.2.0"
-description = "Trailytics Python SDK - AI Observability & Tracing"
+version = "0.3.0"
+description = "Trailytics Python SDK & CLI - AI Observability & Tracing"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "Apache-2.0" }
 authors = [
     { name = "Trailytics Team" }
 ]
-keywords = ["observability", "tracing", "llm", "ai", "trailytics", "opik"]
+keywords = ["observability", "tracing", "llm", "ai", "trailytics", "opik", "cli"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -26,7 +26,12 @@ classifiers = [
 ]
 dependencies = [
     "opik==2.2.138",
+    "click>=8.0.0",
+    "rich>=10.0.0",
 ]
+
+[project.scripts]
+trailytics = "trailytics.cli.main:cli"
 
 [project.optional-dependencies]
 dev = [
