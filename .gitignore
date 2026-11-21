@@ -1,2 +1,7 @@
 .trailytics-build/
 .env.local
+.venv/
+*.egg-info/
+__pycache__/
+*.pyc
+.pytest_cache/

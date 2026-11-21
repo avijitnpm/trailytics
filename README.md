@@ -87,6 +87,57 @@ Upstream Opik sends an anonymous installation report unless
 `TRAILYTICS_USAGE_REPORT_ENABLED=false` in `config/trailytics.env` and exports
 it to the launcher, so no install report is sent.
 
+## Python SDK (Phase 2)
+
+Trailytics provides a Python package that allows developers to trace applications with a Trailytics-branded interface while delegating underlying tracing, serialization, and batch transport to Opik 2.2.138.
+
+### Installation
+
+For local development within the repository:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e upstream/opik/sdks/python
+pip install -e .
+```
+
+### Usage
+
+```python
+import trailytics
+
+# Optional: configure project and endpoint (defaults to http://localhost:5173/api/)
+trailytics.configure(project_name="My Project")
+
+@trailytics.track
+def generate_response(prompt: str) -> dict:
+    return {"response": f"Processed: {prompt}"}
+
+result = generate_response("Hello Trailytics")
+trailytics.flush()
+```
+
+Direct symbol imports are also supported:
+
+```python
+from trailytics import track, configure, flush, Client
+
+@track
+def process(data):
+    return data
+
+result = process("data")
+flush()
+```
+
+### Configuration & Privacy
+
+* `TRAILYTICS_URL`: Defaults to `http://localhost:5173/api/` (maps to `OPIK_URL_OVERRIDE`).
+* `TRAILYTICS_PROJECT`: Defaults to `Default Project` (maps to `OPIK_PROJECT_NAME`).
+* `TRAILYTICS_WORKSPACE`: Defaults to `default` (maps to `OPIK_WORKSPACE`).
+* External Comet analytics (`OPIK_ANALYTICS_ENABLE`) and external Sentry error reporting (`OPIK_SENTRY_ENABLE`) are disabled by default.
+
 ## Upstream and reproducibility
 
 This distribution pins Opik `2.2.138` at
