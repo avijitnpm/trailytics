@@ -8,8 +8,9 @@ Updated: 2026-11-21
   `28192d8ffe85299f5c44032f705a9e518e6d1189`.
 - `install.sh` fetches the submodule with full history (no `--depth 1`), so the
   pinned release tag is reachable on a fresh machine.
-- Frontend patch extended to 15 files: title, favicon, sidebar wordmark,
-  Development group, GitHub stars, Support menu, onboarding integrations,
+- Frontend patch extended to 16 files: title, favicon, sidebar wordmark,
+  Development group, GitHub stars (workspace and project sidebars), Support
+  menu, onboarding integrations,
   welcome wizard, pairing screen, OAuth consent, agent setup, agent-runner
   empty state, user menu, mobile onboarding, trace-limit message.
 - Production frontend image built and running; `curl` reports

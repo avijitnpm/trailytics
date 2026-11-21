@@ -234,6 +234,28 @@ index 0bdc09d..55fb5ee 100644
            <DropdownMenuSub>
              <DropdownMenuSubTrigger className="flex cursor-pointer items-center">
                <CurrentIcon className="mr-2 size-4" />
+diff --git a/src/v2/layout/SideBar/ProjectSidebarContent.tsx b/src/v2/layout/SideBar/ProjectSidebarContent.tsx
+index e403e6e..ce0440a 100644
+--- a/src/v2/layout/SideBar/ProjectSidebarContent.tsx
++++ b/src/v2/layout/SideBar/ProjectSidebarContent.tsx
+@@ -2,7 +2,6 @@ import React from "react";
+ import { useActiveWorkspaceName } from "@/store/AppStore";
+ import SideBarMenuItems from "@/v2/layout/SideBar/SideBarMenuItems";
+ import ProjectSelector from "@/v2/layout/SideBar/ProjectSelector/ProjectSelector";
+-import GitHubStarListItem from "@/v2/layout/SideBar/GitHubStarListItem/GitHubStarListItem";
+ import SidebarMenuItem from "@/v2/layout/SideBar/MenuItem/SidebarMenuItem";
+ import { getWorkspaceMenuItems } from "@/v2/layout/SideBar/helpers/getMenuItems";
+ import { Separator } from "@/ui/separator";
+@@ -40,9 +39,6 @@ const ProjectSidebarContent: React.FC<ProjectSidebarContentProps> = ({
+             )),
+           )}
+         </ul>
+-        <ul className={cn("mt-2 flex flex-col", !expanded && "gap-1")}>
+-          <GitHubStarListItem expanded={expanded} />
+-        </ul>
+       </div>
+     </>
+   );
 diff --git a/src/v2/layout/SideBar/WorkspaceSidebarContent.tsx b/src/v2/layout/SideBar/WorkspaceSidebarContent.tsx
 index 066da05..4a5d144 100644
 --- a/src/v2/layout/SideBar/WorkspaceSidebarContent.tsx
