@@ -423,7 +423,7 @@ services:
       - /var/lib/docker
 
   frontend:
-    image: ${TRAILYTICS_FRONTEND_IMAGE:-trailytics-frontend:2.2.138}
+    image: ${TRAILYTICS_FRONTEND_IMAGE:-avijitnpm/trailytics-frontend:2.2.138}
     pull_policy: ${TRAILYTICS_FRONTEND_PULL_POLICY:-if_not_present}
     profiles:
       - opik

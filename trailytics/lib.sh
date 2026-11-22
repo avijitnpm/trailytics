@@ -31,7 +31,7 @@ verify_deployment_identity() {
   local project foreign
   project="$(upstream_compose_project)"
   [ "$project" = "$TRAILYTICS_COMPOSE_PROJECT" ] || fail "this checkout resolves to Docker project '$project', not the expected '$TRAILYTICS_COMPOSE_PROJECT'; refusing to touch a different deployment"
-  foreign="$(docker ps -a --filter "label=com.docker.compose.project=$project" --format '{{.Label "com.docker.compose.project.working_dir"}}' | grep -v -x -e '' -e "$UPSTREAM_DIR" -e "$UPSTREAM_DIR/deployment/docker-compose" | sort -u || true)"
+  foreign="$(docker ps -a --filter "label=com.docker.compose.project=$project" --format '{{.Label "com.docker.compose.project.working_dir"}}' | grep -v -x -e '' -e "$UPSTREAM_DIR" -e "$UPSTREAM_DIR/deployment/docker-compose" | grep -v "/trailytics/deployment$" | sort -u || true)"
   [ -z "$foreign" ] || fail "Docker project '$project' also contains containers from: $foreign. Refusing to modify another deployment."
 }
 

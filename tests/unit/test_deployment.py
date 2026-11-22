@@ -137,6 +137,33 @@ def test_resolve_frontend_image_local_cache():
     assert warning is None
 
 
+def test_resolve_frontend_image_docker_hub_local():
+    """Verify local Docker Hub branded image is used if present."""
+    mock_client = mock.MagicMock(spec=DockerClient)
+    mock_client.image_exists_locally.side_effect = lambda img: img == "avijitnpm/trailytics-frontend:2.2.138"
+
+    orchestrator = StandaloneOrchestrator(docker_client=mock_client)
+    img, policy, warning = orchestrator.resolve_frontend_image()
+
+    assert img == "avijitnpm/trailytics-frontend:2.2.138"
+    assert policy == "never"
+    assert warning is None
+
+
+def test_resolve_frontend_image_docker_hub_pull():
+    """Verify pulling Docker Hub branded image when not present locally."""
+    mock_client = mock.MagicMock(spec=DockerClient)
+    mock_client.image_exists_locally.return_value = False
+    mock_client.try_pull_image.side_effect = lambda img: img == "avijitnpm/trailytics-frontend:2.2.138"
+
+    orchestrator = StandaloneOrchestrator(docker_client=mock_client)
+    img, policy, warning = orchestrator.resolve_frontend_image()
+
+    assert img == "avijitnpm/trailytics-frontend:2.2.138"
+    assert policy == "if_not_present"
+    assert warning is None
+
+
 def test_resolve_frontend_image_fallback_to_upstream():
     """Verify falling back to official upstream image when branded image is missing."""
     mock_client = mock.MagicMock(spec=DockerClient)
@@ -151,7 +178,7 @@ def test_resolve_frontend_image_fallback_to_upstream():
     assert policy == "if_not_present"
     assert warning is not None
     assert "Falling back to official Opik 2.2.138 frontend" in warning
-    assert "trailytics-frontend" in warning
+    assert "avijitnpm/trailytics-frontend:2.2.138" in warning
 
 
 def test_resolve_frontend_image_both_missing_fails():

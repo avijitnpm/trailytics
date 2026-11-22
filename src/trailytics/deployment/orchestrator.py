@@ -110,19 +110,19 @@ class StandaloneOrchestrator:
         if self.docker.image_exists_locally("trailytics-frontend:2.2.138"):
             return ("trailytics-frontend:2.2.138", "never", None)
 
-        # 2. Check local ghcr.io branded image
-        if self.docker.image_exists_locally("ghcr.io/trailytics/trailytics-frontend:2.2.138"):
-            return ("ghcr.io/trailytics/trailytics-frontend:2.2.138", "never", None)
+        # 2. Check local Docker Hub branded image
+        if self.docker.image_exists_locally("avijitnpm/trailytics-frontend:2.2.138"):
+            return ("avijitnpm/trailytics-frontend:2.2.138", "never", None)
 
-        # 3. Try pulling ghcr.io branded image
-        if self.docker.try_pull_image("ghcr.io/trailytics/trailytics-frontend:2.2.138"):
-            return ("ghcr.io/trailytics/trailytics-frontend:2.2.138", "if_not_present", None)
+        # 3. Try pulling Docker Hub branded image
+        if self.docker.try_pull_image("avijitnpm/trailytics-frontend:2.2.138"):
+            return ("avijitnpm/trailytics-frontend:2.2.138", "if_not_present", None)
 
         # 4. Fallback to official upstream Opik image
         upstream_img = "ghcr.io/comet-ml/opik/opik-frontend:2.2.138"
         if self.docker.image_exists_locally(upstream_img) or self.docker.try_pull_image(upstream_img):
             warning = (
-                "Warning: Trailytics branded frontend image ('ghcr.io/trailytics/trailytics-frontend:2.2.138') "
+                "Warning: Trailytics branded frontend image ('avijitnpm/trailytics-frontend:2.2.138') "
                 "is not available locally or in the container registry.\n"
                 "Falling back to official Opik 2.2.138 frontend ('ghcr.io/comet-ml/opik/opik-frontend:2.2.138').\n"
                 "The dashboard UI will operate with default upstream branding."
@@ -131,7 +131,7 @@ class StandaloneOrchestrator:
 
         # 5. Neither image available
         raise TrailyticsError(
-            "Neither the Trailytics frontend image ('trailytics-frontend:2.2.138') "
+            "Neither the Trailytics frontend image ('avijitnpm/trailytics-frontend:2.2.138') "
             "nor the upstream Opik frontend ('ghcr.io/comet-ml/opik/opik-frontend:2.2.138') "
             "could be found locally or pulled from the registry."
         )

@@ -537,28 +537,26 @@ def check_deployment(
         )
         if ps_res.returncode == 0:
             dirs = set(line.strip() for line in ps_res.stdout.splitlines() if line.strip())
-            if is_development_mode() and repo_dir:
-                valid_dirs = {upstream_dir, f"{upstream_dir}/deployment/docker-compose"}
-                foreign_dirs = [d for d in dirs if d not in valid_dirs]
-            else:
-                # In standalone mode, containers may originate from the bundled
-                # deployment directory or an existing compatible deployment.
-                # A conflict exists only if containers are split across multiple directories.
-                if len(dirs) > 1:
-                    foreign_dirs = list(dirs)
-                else:
-                    foreign_dirs = []
+
+            def is_valid_trailytics_dir(d: str) -> bool:
+                p = Path(d)
+                if p.name == "deployment" and p.parent.name == "trailytics":
+                    return True
+                if repo_dir:
+                    if d in (upstream_dir, f"{upstream_dir}/deployment/docker-compose"):
+                        return True
+                elif d.endswith("upstream/opik") or d.endswith("upstream/opik/deployment/docker-compose"):
+                    return True
+                return False
+
+            foreign_dirs = [d for d in dirs if not is_valid_trailytics_dir(d)]
 
             if foreign_dirs:
-                if is_development_mode() and repo_dir:
-                    msg = f"Conflicting containers detected from foreign directory: {', '.join(foreign_dirs)}"
-                else:
-                    msg = f"Conflicting containers detected across multiple directories: {', '.join(foreign_dirs)}"
                 checks.append(
                     DiagnosticCheck(
                         name="Project identity verified",
                         status=CheckStatus.FAIL,
-                        message=msg,
+                        message=f"Conflicting containers detected from foreign directory: {', '.join(foreign_dirs)}",
                     )
                 )
             else:

@@ -902,7 +902,7 @@ def test_doctor_connectivity_failure_when_running(cli_runner, mock_repo_dir):
 
 
 def test_doctor_standalone_mode_project_identity_pass(cli_runner):
-    """Verify in standalone mode that single directory container sets pass project identity."""
+    """Verify in standalone mode that valid deployment container sets pass project identity."""
     def fake_subprocess_run(cmd, *args, **kwargs):
         if "docker" in cmd and "--version" in cmd:
             return subprocess.CompletedProcess(args=cmd, returncode=0, stdout="Docker version 25.0.0\n")
@@ -916,7 +916,7 @@ def test_doctor_standalone_mode_project_identity_pass(cli_runner):
             return subprocess.CompletedProcess(
                 args=cmd,
                 returncode=0,
-                stdout="/some/deployment/docker-compose\n/some/deployment/docker-compose\n",
+                stdout="/some/site-packages/trailytics/deployment\n/some/site-packages/trailytics/deployment\n",
             )
         if "docker" in cmd and "inspect" in cmd:
             return subprocess.CompletedProcess(args=cmd, returncode=0, stdout="running|healthy|0\n")
@@ -938,7 +938,7 @@ def test_doctor_standalone_mode_project_identity_pass(cli_runner):
 
 
 def test_doctor_standalone_mode_project_identity_split_conflict(cli_runner):
-    """Verify in standalone mode that containers from multiple working directories fail."""
+    """Verify in standalone mode that containers from foreign directories fail."""
     def fake_subprocess_run(cmd, *args, **kwargs):
         if "docker" in cmd and "--version" in cmd:
             return subprocess.CompletedProcess(args=cmd, returncode=0, stdout="Docker version 25.0.0\n")
@@ -952,7 +952,7 @@ def test_doctor_standalone_mode_project_identity_split_conflict(cli_runner):
             return subprocess.CompletedProcess(
                 args=cmd,
                 returncode=0,
-                stdout="/first/dir\n/second/dir\n",
+                stdout="/foreign/first/dir\n/foreign/second/dir\n",
             )
         if "docker" in cmd and "inspect" in cmd:
             return subprocess.CompletedProcess(args=cmd, returncode=0, stdout="running|healthy|0\n")
@@ -970,7 +970,7 @@ def test_doctor_standalone_mode_project_identity_split_conflict(cli_runner):
         result = cli_runner.invoke(cli, ["doctor"])
         assert "Trailytics Doctor (Mode: Standalone)" in result.output
         assert "[FAIL] Project identity verified" in result.output
-        assert "Conflicting containers detected across multiple directories" in result.output
+        assert "Conflicting containers detected from foreign directory" in result.output
 
 
 
