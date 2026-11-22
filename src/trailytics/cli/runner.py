@@ -7,6 +7,8 @@ from pathlib import Path
 import subprocess
 from typing import Dict, List, Optional, Tuple
 
+import click
+
 from trailytics.exceptions import RepositoryNotFoundError, ScriptExecutionError
 
 # Required repository markers to validate a Trailytics root directory
@@ -97,6 +99,26 @@ def get_repository_root() -> Path:
     return repo
 
 
+def is_development_mode() -> bool:
+    """Determine whether the CLI is running in Development mode or Standalone mode.
+
+    Returns True if running inside a valid repository checkout (unless forced to standalone
+    via TRAILYTICS_DEPLOYMENT_MODE='standalone').
+    Returns False if outside a repository or if TRAILYTICS_DEPLOYMENT_MODE is standalone.
+    """
+    mode_override = os.environ.get("TRAILYTICS_DEPLOYMENT_MODE", "").strip().lower()
+    if mode_override in {"development", "repo", "dev"}:
+        return True
+    if mode_override in {"standalone", "packaged", "pkg"}:
+        return False
+
+    try:
+        root = find_repository_root()
+        return root is not None
+    except RepositoryNotFoundError:
+        return False
+
+
 def get_repository_metadata(repo_dir: Optional[Path] = None) -> Dict[str, str]:
     """Parse deployment metadata from config/trailytics.env."""
     if repo_dir is None:
@@ -182,3 +204,52 @@ def run_script(
         raise ScriptExecutionError(msg, exit_code=result.returncode)
 
     return result
+
+
+def execute_lifecycle_script(
+    script_name: str,
+    args: Optional[List[str]] = None,
+    env: Optional[Dict[str, str]] = None,
+    allow_interrupt: bool = False,
+) -> int:
+    """Execute a Trailytics lifecycle script, streaming output to terminal.
+
+    Catches repository discovery errors, missing scripts, and execution errors cleanly
+    without emitting Python tracebacks to the user.
+
+    Args:
+        script_name: Name of the script under trailytics/ (e.g. 'start.sh', 'stop.sh', 'status.sh').
+        args: Optional list of command-line arguments.
+        env: Optional environment variables dictionary.
+        allow_interrupt: If True, KeyboardInterrupt exits cleanly with code 0 (for log following).
+            If False (default), KeyboardInterrupt returns code 130 to reflect an aborted operation.
+
+    Returns:
+        The integer exit code of the process.
+    """
+    try:
+        result = run_script(
+            script_name,
+            args=args,
+            env=env,
+            capture_output=False,
+            check=False,
+        )
+        return result.returncode
+    except RepositoryNotFoundError as e:
+        click.echo(f"Trailytics Error: {e}", err=True)
+        return 1
+    except FileNotFoundError as e:
+        click.echo(f"Trailytics Error: {e}", err=True)
+        return 1
+    except ScriptExecutionError as e:
+        click.echo(f"Trailytics Error: {e}", err=True)
+        return e.exit_code
+    except OSError as e:
+        click.echo(f"Trailytics Error: Failed to run '{script_name}': {e}", err=True)
+        return 1
+    except KeyboardInterrupt:
+        if allow_interrupt:
+            return 0
+        click.echo(f"\nTrailytics: operation '{script_name}' interrupted by user.", err=True)
+        return 130

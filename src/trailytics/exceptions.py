@@ -18,6 +18,42 @@ class TrailyticsConfigurationError(TrailyticsError):
     pass
 
 
+class ProfileError(TrailyticsConfigurationError):
+    """Base exception for profile-related operations."""
+
+    pass
+
+
+class ProfileNotFoundError(ProfileError):
+    """Raised when a requested profile does not exist."""
+
+    pass
+
+
+class ProfileAlreadyExistsError(ProfileError):
+    """Raised when attempting to create a profile that already exists."""
+
+    pass
+
+
+class ProfileValidationError(ProfileError):
+    """Raised when profile metadata or options fail validation."""
+
+    pass
+
+
+class ProfileStorageError(ProfileError):
+    """Raised when saving or loading profile files fails."""
+
+    pass
+
+
+class InsecureCredentialsError(ProfileError):
+    """Raised when credential file permissions are insecure."""
+
+    pass
+
+
 class RepositoryNotFoundError(TrailyticsError):
     """Raised when the Trailytics repository root cannot be located or is invalid."""
 
